@@ -76,8 +76,9 @@ public class StudentsController {
             _student.setEmail(student.getEmail());
             _student.setPhone(student.getPhone());
             _student.setDob(student.getDob());
-            _student.setSubject_learning_id(student.getSubject_learning_id());
-            _student.setDept_id(student.getDept_id());
+            _student.setIsActive(student.getIsActive());
+            _student.setSubjectLearning(student.getSubjectLearning());
+            _student.setDepartment(student.getDepartment());
             return new ResponseEntity<>(studentRepository.save(_student), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

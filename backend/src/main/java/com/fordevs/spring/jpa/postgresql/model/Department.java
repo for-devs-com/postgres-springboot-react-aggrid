@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,11 +16,17 @@ import java.util.List;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long dept_id;
+    @Column(name = "dept_id")
+    private Long depID;
 
     @Column(name = "dept_name")
     private String deptName;
 
-    @OneToMany(mappedBy = "departments")
-    private List<Student> students;
+    // Fk
+    @Column(name = "student_id")
+    private Long student_id;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department", targetEntity = Student.class)
+    //@JoinColumn(name = "student_id")
+    private List<Student> students = new ArrayList<>();
 }

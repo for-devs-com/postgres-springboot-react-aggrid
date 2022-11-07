@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -27,7 +29,10 @@ public class SubjectLearning {
     @Column(name = "marks_obtained")
     private String marksObtained;
 
-    @ManyToMany//(mappedBy = "student_id")
-    private List<Student> student;
-
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "subject_student",
+            joinColumns = @JoinColumn(name = "Subject_id", referencedColumnName = "subject_learning_id"),
+            inverseJoinColumns = @JoinColumn(name = "stud_id", referencedColumnName = "student_id")
+    )
+    private List<Student> student =  new ArrayList<>();
 }

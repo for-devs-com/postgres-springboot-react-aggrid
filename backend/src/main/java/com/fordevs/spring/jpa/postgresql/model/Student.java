@@ -1,6 +1,7 @@
 package com.fordevs.spring.jpa.postgresql.model;
 
 import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,48 +16,40 @@ import java.util.List;
 @NoArgsConstructor
 public class Student {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true)
-	private Long student_id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id", nullable = false, unique = true)
+    private Long studentID;
 
-	@Column(name = "full_name")
-	private String fullName;
+    @Column(name = "full_name")
+    private String fullName;
 
-	@Column(name = "email")
-	private String email;
+    @Column(name = "email")
+    private String email;
 
-	@Column(name = "phone")
-	private String phone;
+    @Column(name = "phone")
+    private String phone;
 
-	@Column(name = "dob")
-	private String dob;
+    @Column(name = "dob")
+    private String dob;
 
-    @Column(name = "dept_id")
-    private Long dept_id;
+//    @Column(name = "dept_id")
+//    private Long deptID;
 
-    private Long subject_learning_id;
+    // FK
+//	@Column(name = "subject_learning_id")
+//    private Long subject_learning_id;
 
-	@Column(name = "is_active")
-	private Boolean isActive;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
-	// Relations
-	@ManyToOne
-	@JoinColumn(name = "dept_id", insertable = false, updatable = false)
-	private  Department department;
+    // Relations
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@JoinColumn(name = "dept_id", insertable = false, updatable = false)
+    @JoinColumn(name = "dept_id")
+    private Department department;
 
-	@ManyToMany // (mappedBy = "students" )
-	@JoinColumn(name = "subject_learning_id")
-	private List<SubjectLearning> subjectLearning = new ArrayList<>();
-    @ManyToOne(optional = false)
-    private Department departments;
-
-    public Department getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(Department departments) {
-        this.departments = departments;
-    }
+    @ManyToMany
+    private List<SubjectLearning> subjectLearning = new ArrayList<>();
 }
 
