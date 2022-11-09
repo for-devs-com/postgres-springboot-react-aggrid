@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -23,10 +24,6 @@ public class Department {
     private String deptName;
 
     // Fk
-    @Column(name = "student_id")
-    private Long student_id;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department", targetEntity = Student.class)
-    //@JoinColumn(name = "student_id")
-    private List<Student> students = new ArrayList<>();
+    @OneToMany(mappedBy = "department")
+    List<Student> students;
 }

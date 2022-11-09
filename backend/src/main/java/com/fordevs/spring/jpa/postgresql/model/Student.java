@@ -1,12 +1,11 @@
 package com.fordevs.spring.jpa.postgresql.model;
 
-import javax.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -17,8 +16,9 @@ import java.util.List;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "student_id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Column(name = "student_id", nullable = false, unique = true)
+    @Column(name = "student_id", unique = true)
     private Long studentID;
 
     @Column(name = "full_name")
@@ -33,23 +33,20 @@ public class Student {
     @Column(name = "dob")
     private String dob;
 
-//    @Column(name = "dept_id")
-//    private Long deptID;
-
-    // FK
-//	@Column(name = "subject_learning_id")
-//    private Long subject_learning_id;
-
     @Column(name = "is_active")
     private Boolean isActive;
 
-    // Relations
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    //@JoinColumn(name = "dept_id", insertable = false, updatable = false)
-    @JoinColumn(name = "dept_id")
-    private Department department;
+    // FK
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "deptartmentID")
+    Department department;
 
-    @ManyToMany
-    private List<SubjectLearning> subjectLearning = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "students_subjectlearnings",
+            joinColumns = @JoinColumn(name = "sudent_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_learning_id")
+    )
+    private List<SubjectLearning> subjectLearning;
 }
 
