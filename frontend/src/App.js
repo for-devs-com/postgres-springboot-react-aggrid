@@ -5,13 +5,13 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.min.css";
 import {Grid, Button} from "@material-ui/core";
 import FormDialog from "./components/dialog";
-import UserDataService from "../src/services/UserDataService";
+import StudentDataService from "./services/StudentDataService";
 //import axios from "axios";
 
 // initial data values in form 
 const initialValue = {fullName: "", email: "", phone: "", dob: ""};
 
-// Main Funciton
+// Main Function
 function App(message) {
     // eslint-disable-next-line
     const [gridApi, setGridApi] = useState(null);
@@ -31,13 +31,16 @@ function App(message) {
     };
 
     const columnDefs = [
-        {headerName: "ID", field: "user_id"},
+        {headerName: "ID", field: "studentID"},
         {headerName: "Name", field: "fullName"},
         {headerName: "Email", field: "email"},
         {headerName: "phone", field: "phone"},
         {headerName: "Date of Birth", field: "dob"},
+        {headerName: "State", field: "isActive"},
+        {headerName: "Department", field: "deptName"},
+        {headerName: "Subject", field: "subjectLearningName" },
         {
-            headerName: "Actions", field: "user_id",
+            headerName: "Actions", field: "student_id",
             cellRendererFramework: (params) =>
                 <div>
                     <Button
@@ -68,7 +71,7 @@ function App(message) {
 
     // Fetching user data from server
     const getUsers = () => {
-        UserDataService.getAll()
+        StudentDataService.getAll()
             .then((response) => {
                 console.log(response.data)
                 setTableData(response.data)
@@ -91,7 +94,7 @@ function App(message) {
         )
 
         if (confirmation) {
-            UserDataService.delete(id).then((r) => r.data).then((r) => {
+            StudentDataService.delete(id).then((r) => r.data).then((r) => {
                 handleClose();
                 getUsers();
             })
@@ -108,7 +111,7 @@ function App(message) {
             );
 
             //  updating a user
-            confirm && UserDataService.update(formData.id)
+            confirm && StudentDataService.update(formData.id)
                 .then((r) => r.data)
                 .then(r => {
                     setFormData(r.data)
@@ -130,7 +133,7 @@ function App(message) {
         } else {
 
             // adding new user
-            UserDataService.create(formData).then((r) => r.data).then((r) => {
+            StudentDataService.create(formData).then((r) => r.data).then((r) => {
                 //setFormData(r.data)
                 handleClose();
                 getUsers()
@@ -158,13 +161,10 @@ function App(message) {
         console.log(value, id)
     };
 
-    // render grit when data exist
+    // render grid when data exist
     const onGridReady = (params) => {
         setGridApi(params);
     };
-
-
-
 
     const defaultColDef = {
         sortable: true,
@@ -187,7 +187,7 @@ function App(message) {
                 </Button>
             </Grid>
 
-            <div className="ag-theme-material" style={{height: "400px"}}>
+            <div className="ag-theme-material" style={{height: "500px"}}>
                 <AgGridReact
                     rowData={tableData}
                     columnDefs={columnDefs}

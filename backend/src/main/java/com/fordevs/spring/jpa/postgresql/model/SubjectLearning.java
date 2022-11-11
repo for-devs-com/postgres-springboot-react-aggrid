@@ -25,5 +25,6 @@ public class SubjectLearning {
     private String marksObtained;
 
     @ManyToMany(mappedBy = "subjectLearning")
-    private List<Student> student;
+    //@JsonBackReference
+    List<Student> student;
 }

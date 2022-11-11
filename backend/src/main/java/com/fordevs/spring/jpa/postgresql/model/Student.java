@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -38,10 +37,11 @@ public class Student {
 
     // FK
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "deptartmentID")
+    @JoinColumn(name = "departmentID")
     Department department;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    //@JsonManagedReference
     @JoinTable(
             name = "students_subjectlearnings",
             joinColumns = @JoinColumn(name = "sudent_id"),

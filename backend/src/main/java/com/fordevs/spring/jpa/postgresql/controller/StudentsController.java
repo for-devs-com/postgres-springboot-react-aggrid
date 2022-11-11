@@ -1,5 +1,7 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
@@ -27,19 +29,20 @@ public class StudentsController {
     @GetMapping("/students")
     public ResponseEntity<List<Student>> getAllStudents(@RequestParam(required = false) String fullName) {
         try {
-            List<Student> students = new ArrayList<>();
+            List<Student> studentList = new ArrayList<>();
+            //JsonNode jsonStudent
 
             if (fullName == null)
-                students.addAll(studentRepository.findAll());
+                studentList.addAll(studentRepository.findAll());
 
             else
-                students.addAll(studentRepository.findByFullNameContaining(fullName));
+                studentList.addAll(studentRepository.findByFullNameContaining(fullName));
 
-            if (students.isEmpty()) {
+            if (studentList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            return new ResponseEntity<>(students, HttpStatus.OK);
+            return new ResponseEntity<>(studentList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

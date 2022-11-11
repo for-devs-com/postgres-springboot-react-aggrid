@@ -25,5 +25,5 @@ public class Department {
 
     // Fk
     @OneToMany(mappedBy = "department")
-    List<Student> students;
+    Collection<Student> students;
 }
