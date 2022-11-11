@@ -17,7 +17,7 @@ import java.util.List;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "dept_id")
+    @Column(name = "dept_id", unique = true)
     private Long depID;
 
     @Column(name = "dept_name")

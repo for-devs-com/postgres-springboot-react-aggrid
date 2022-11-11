@@ -16,7 +16,8 @@ public class SubjectLearning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long subject_learning_id;
+    @Column(name = "dept_id", unique = true)
+    private Long subjectLearningID;
 
     @Column(name = "subject_learning_name")
     private String subjectLearningName;
@@ -24,7 +25,11 @@ public class SubjectLearning {
     @Column(name = "marks_obtained")
     private String marksObtained;
 
-    @ManyToMany(mappedBy = "subjectLearning")
-    //@JsonBackReference
-    List<Student> student;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "subjectlearnings_students",
+            joinColumns = @JoinColumn(name = "subject_learning_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    List<Student> students;
 }
