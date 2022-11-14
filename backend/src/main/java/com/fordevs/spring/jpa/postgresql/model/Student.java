@@ -38,7 +38,7 @@ public class Student {
 
     // FK
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "departmentID")
+    @JoinColumn(name = "dept_id")
     Department department;
 
     @ManyToMany(mappedBy = "students")

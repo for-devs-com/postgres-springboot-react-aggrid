@@ -9,7 +9,7 @@ import StudentDataService from "./services/StudentDataService";
 //import axios from "axios";
 
 // initial data values in form 
-const initialValue = {fullName: "", email: "", phone: "", dob: ""};
+const initialValue = {fullName: "", email: "", phone: "", dob: "", isActive:""};
 
 // Main Function
 function App(message) {
@@ -64,13 +64,13 @@ function App(message) {
     ];
 
 
-    //  first time getUsers
+    //  first time getStudents
     useEffect(() => {
-        getUsers();
+        getStudents();
     }, []);
 
     // Fetching user data from server
-    const getUsers = () => {
+    const getStudents = () => {
         StudentDataService.getAll()
             .then((response) => {
                 console.log(response.data)
@@ -94,9 +94,9 @@ function App(message) {
         )
 
         if (confirmation) {
-            StudentDataService.delete(id).then((r) => r.data).then((r) => {
+            StudentDataService.delete().then((r) => r.data).then((r) => {
                 handleClose();
-                getUsers();
+                getStudents();
             })
         }
     };
@@ -116,41 +116,16 @@ function App(message) {
                 .then(r => {
                     setFormData(r.data)
                     handleClose();
-                    getUsers()
+                    getStudents()
                 })
-            // fetch(url + `/${formData.id}`, {
-            //     method: "PUT",
-            //     body: JSON.stringify(formData),
-            //     headers: {
-            //         "content-type": "application/json",
-            //     },
-            // })
-            //     .then((resp) => resp.data)
-            //     .then((resp) => {
-            //         handleClose();
-            //         getUsers();
-            //     });
         } else {
 
             // adding new user
             StudentDataService.create(formData).then((r) => r.data).then((r) => {
-                //setFormData(r.data)
                 handleClose();
-                getUsers()
+                getStudents()
             })
 
-            // fetch(url, {
-            //     method: "POST",
-            //     body: JSON.stringify(formData),
-            //     headers: {
-            //         "content-type": "application/json",
-            //     },
-            // })
-            //     .then((resp) => resp.data)
-            //     .then((resp) => {
-            //         handleClose();
-            //         getUsers();
-            //     });
         }
     };
 
@@ -171,6 +146,7 @@ function App(message) {
         flex: 1,
         filter: true,
         floatingFilter: true,
+        resizable: true,
     };
 
     return (
@@ -181,13 +157,7 @@ function App(message) {
             <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example Application</h2>
 
             {/* Material UI Grid Layout */}
-            <Grid align="right">
-                <Button variant="contained" color="primary" onClick={handleClickOpen}>
-                    Create User
-                </Button>
-            </Grid>
-
-            <div className="ag-theme-material" style={{height: "500px"}}>
+            <div className="ag-theme-material" style={{height: 500} }>
                 <AgGridReact
                     rowData={tableData}
                     columnDefs={columnDefs}
@@ -195,6 +165,12 @@ function App(message) {
                     onGridReady={onGridReady}
                 />
             </div>
+
+            <Grid align="center">
+                <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                    Create Student
+                </Button>
+            </Grid>
 
             <FormDialog
                 open={open}

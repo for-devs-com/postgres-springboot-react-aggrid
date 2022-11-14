@@ -1,5 +1,6 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
+import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.model.SubjectLearning;
 import com.fordevs.spring.jpa.postgresql.repository.SubjectLearningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,14 @@ public class SubjectLearningController {
         }
     }
 
-//    public SubjectLearning save(SubjectLearning subjectLearning){
-//        return subjectLearningRepository.save(subjectLearning);
-//    }
+    @PostMapping("/subject")
+    public ResponseEntity<SubjectLearning> createSubject(@RequestBody SubjectLearning subjectLearning) {
+        try {
+            SubjectLearning _subjectLearning = subjectLearningRepository
+                    .save(subjectLearning);
+            return new ResponseEntity<>(_subjectLearning, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

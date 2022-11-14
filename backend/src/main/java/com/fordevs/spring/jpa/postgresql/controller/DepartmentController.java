@@ -70,6 +70,7 @@ public class DepartmentController {
         if (deptData.isPresent()) {
             Department _departments = deptData.get();
             _departments.setDeptName(departments.getDeptName());
+            _departments.setStudents(departments.getStudents());
             return new ResponseEntity<>(departmentRepository.save(_departments), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

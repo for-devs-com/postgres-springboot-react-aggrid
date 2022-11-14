@@ -4,7 +4,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {TextField} from "@material-ui/core";
+import {Switch, TextField} from "@material-ui/core";
 
 
 export default function FormDialog({
@@ -14,7 +14,7 @@ export default function FormDialog({
                                        onChange,
                                        handleFormSubmit,
                                    }) {
-    const {user_id, fullName, email, phone, dob} = data;
+    const {user_id, fullName, email, phone, dob, isActive, department, subjectLearning } = data;
 
     return (
         <div>
@@ -74,6 +74,16 @@ export default function FormDialog({
                             variant="outlined"
                             margin="dense"
                             fullWidth
+                        />
+                        <Switch
+                            id="isActive"
+                            value={isActive}
+                            onChange={(e) => onChange(e)}
+                            placeholder="Enter fullName"
+                            label="isActive"
+                            variant="outlined"
+                            margin="dense"
+
                         />
                     </form>
                 </DialogContent>

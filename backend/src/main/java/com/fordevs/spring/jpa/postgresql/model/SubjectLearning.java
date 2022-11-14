@@ -16,7 +16,7 @@ public class SubjectLearning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "dept_id", unique = true)
+    @Column(name = "subject_learning_id", unique = true)
     private Long subjectLearningID;
 
     @Column(name = "subject_learning_name")
