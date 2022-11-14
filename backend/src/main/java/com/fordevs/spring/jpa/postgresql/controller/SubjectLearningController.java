@@ -1,6 +1,5 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
-import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.model.SubjectLearning;
 import com.fordevs.spring.jpa.postgresql.repository.SubjectLearningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
