@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import "./App.css";
 import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -30,13 +30,25 @@ function App(message) {
         setFormData(initialValue);
     };
 
-    const columnDefs = [
+    //
+    const defaultColDef = useMemo(() => {
+        return {
+            editable: true,
+            sortable: true,
+            flex: 1,
+            filter: true,
+            floatingFilter: true,
+            resizable: true,
+        };
+    }, []);
+
+    const [columnDefs, setColumnsDefs] = useState([
         {headerName: "ID", field: "studentID"},
         {headerName: "Name", field: "fullName"},
         {headerName: "Email", field: "email"},
         {headerName: "phone", field: "phone"},
         {headerName: "Date of Birth", field: "dob"},
-        {headerName: "State", field: "isActive"},
+        {headerName: "State", field: "isActive",},
         {headerName: "Department", field: "deptName"},
         {headerName: "Subject", field: "subjectLearningName" },
         {
@@ -61,7 +73,7 @@ function App(message) {
                 </div>
 
         }
-    ];
+    ]);
 
 
     //  first time getStudents
@@ -141,13 +153,7 @@ function App(message) {
         setGridApi(params);
     };
 
-    const defaultColDef = {
-        sortable: true,
-        flex: 1,
-        filter: true,
-        floatingFilter: true,
-        resizable: true,
-    };
+
 
     return (
 
@@ -163,6 +169,9 @@ function App(message) {
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
                     onGridReady={onGridReady}
+                    pagination={true}
+                    paginationPageSize={8}
+
                 />
             </div>
 

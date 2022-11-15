@@ -1,26 +1,30 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.repository.StudentRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class StudentsController {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    List<String> subjectLearningList = new ArrayList<>();
+    JsonNode subjectLearning ;
+    JsonNode departments;
 
 
     //	getting all users
@@ -55,13 +59,26 @@ public class StudentsController {
     }
 
     //	Create Student
-    @PostMapping("/students")
-    public ResponseEntity<Student> createStudents(@RequestBody Student student) {
+    @PostMapping(value = "/students")
+    public ResponseEntity<Student> createStudents(@RequestBody String request) {
         try {
-            Student _student = studentRepository
-                    .save(student);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Student student = objectMapper.readValue(request,Student.class );
+            JsonNode jsonNode = objectMapper.readTree(String.valueOf(student));
+
+            departments = jsonNode.at("/department");
+            subjectLearning = jsonNode.at("/subjectLearning");
+            subjectLearningList.add(String.valueOf(subjectLearning));
+
+
+
+            Student _student = studentRepository.save(student);
+
+            log.info("Student: {}",_student);
+            log.info("Subject Learning: {}",subjectLearningList);
             return new ResponseEntity<>(_student, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.info(String.valueOf(e));
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
