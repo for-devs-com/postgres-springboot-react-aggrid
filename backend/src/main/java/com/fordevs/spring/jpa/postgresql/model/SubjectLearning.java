@@ -18,14 +18,13 @@ public class SubjectLearning {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "subject_learning_id", unique = true)
-    private Long subjectLearningID;
+    Long subjectLearningID;
 
     @Column(name = "subject_learning_name")
-    @NonNull
-    private String subjectLearningName;
+    String subjectLearningName;
 
     @Column(name = "marks_obtained")
-    private String marksObtained;
+    String marksObtained;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

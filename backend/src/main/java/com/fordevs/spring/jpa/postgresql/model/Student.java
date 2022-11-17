@@ -20,10 +20,9 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.AUTO)
     //@Column(name = "student_id", nullable = false, unique = true)
     @Column(name = "student_id", unique = true)
-    private Long studentID;
+    Long studentID;
 
     @Column(name = "full_name")
-    @NonNull
     private String fullName;
 
     @Column(name = "email")
@@ -36,15 +35,15 @@ public class Student {
     private String dob;
 
     @Column(name = "is_active")
-    @NonNull
     private Boolean isActive;
 
     // FK
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id")
-    private Department department;
+    //Department department = new Department();
+    Department department;
 
     @ManyToMany(mappedBy = "students")
-    private List<SubjectLearning> subjectLearning;
+    List<SubjectLearning> subjectLearning;
 }
 

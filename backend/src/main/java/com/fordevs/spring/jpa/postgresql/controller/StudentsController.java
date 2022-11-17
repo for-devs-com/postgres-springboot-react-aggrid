@@ -1,16 +1,22 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -24,13 +30,14 @@ public class StudentsController {
     @Autowired
     private StudentRepository studentRepository;
 
-    List<String> subjectLearningList = new ArrayList<>();
-    JsonNode subjectLearning;
-    JsonNode departments;
+//    List<String> subjectLearningList = new ArrayList<>();
+//    JsonNode subjectLearning;
+//    JsonNode departments;
 
 
     //	getting all users
-    @GetMapping(value = "/students", produces = "application/json")
+    //@GetMapping(value = "/students", produces = "application/json")
+    @GetMapping(value = "/students")
     public ResponseEntity<List<Student>> getAllStudents(@RequestParam(required = false) String fullName) {
         try {
             List<Student> studentList = new ArrayList<>();
@@ -70,21 +77,23 @@ public class StudentsController {
 
     //	Create Student
     @PostMapping(value = "/students", consumes = "application/json")
-    public ResponseEntity<Student> createStudents(@RequestBody String request) {
+    public ResponseEntity<Student> createStudents(@RequestBody String request) throws JsonParseException, JsonMappingException, IOException {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Student student = objectMapper.readValue(request, Student.class);
-            JsonNode jsonNode = objectMapper.readTree(String.valueOf(student));
 
-            departments = jsonNode.at("/department");
-            subjectLearning = jsonNode.at("/subjectLearning");
-            subjectLearningList.add(String.valueOf(subjectLearning));
+            ObjectMapper objectMapper = new ObjectMapper();
+            //objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+            Student student = objectMapper.readValue(request, Student.class);
+            //JsonNode jsonNode = objectMapper.readTree(String.valueOf(student));
+
+//            departments = jsonNode.at("/department");
+//            subjectLearning = jsonNode.at("/subjectLearning");
+//            subjectLearningList.add(String.valueOf(subjectLearning));
 
 
             Student _student = studentRepository.save(student);
 
             log.info("Student: {}", _student);
-            log.info("Subject Learning: {}", subjectLearningList);
+           // log.info("Subject Learning: {}", subjectLearningList);
             return new ResponseEntity<>(_student, HttpStatus.CREATED);
         } catch (Exception e) {
             log.info(String.valueOf(e));

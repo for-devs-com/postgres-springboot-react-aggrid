@@ -17,13 +17,12 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "dept_id", unique = true)
-    private Long depID;
+    Long depID;
 
     @Column(name = "dept_name")
-    @NonNull
-    private String deptName;
+    String deptName;
 
     // Fk
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
-    private Set<Student> students = new HashSet<>();
+    List<Student> students;
 }
