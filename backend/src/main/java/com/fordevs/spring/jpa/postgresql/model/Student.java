@@ -3,6 +3,7 @@ package com.fordevs.spring.jpa.postgresql.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -22,6 +23,7 @@ public class Student {
     private Long studentID;
 
     @Column(name = "full_name")
+    @NonNull
     private String fullName;
 
     @Column(name = "email")
@@ -34,12 +36,13 @@ public class Student {
     private String dob;
 
     @Column(name = "is_active")
+    @NonNull
     private Boolean isActive;
 
     // FK
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id")
-    Department department;
+    private Department department;
 
     @ManyToMany(mappedBy = "students")
     private List<SubjectLearning> subjectLearning;

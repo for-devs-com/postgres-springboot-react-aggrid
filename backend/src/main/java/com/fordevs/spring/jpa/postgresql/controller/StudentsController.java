@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.repository.StudentRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 @Slf4j
 public class StudentsController {
 
@@ -23,15 +25,23 @@ public class StudentsController {
     private StudentRepository studentRepository;
 
     List<String> subjectLearningList = new ArrayList<>();
-    JsonNode subjectLearning ;
+    JsonNode subjectLearning;
     JsonNode departments;
 
 
     //	getting all users
-    @GetMapping("/students")
+    @GetMapping(value = "/students", produces = "application/json")
     public ResponseEntity<List<Student>> getAllStudents(@RequestParam(required = false) String fullName) {
         try {
             List<Student> studentList = new ArrayList<>();
+//
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            JsonNode jsonNode = objectMapper.readTree(String.valueOf(studentList));
+//
+//            departments = jsonNode.at("/department");
+//            subjectLearning = jsonNode.at("/subjectLearning");
+//            subjectLearningList.add(String.valueOf(subjectLearning));
+
             //JsonNode jsonStudent
 
             if (fullName == null)
@@ -59,11 +69,11 @@ public class StudentsController {
     }
 
     //	Create Student
-    @PostMapping(value = "/students")
+    @PostMapping(value = "/students", consumes = "application/json")
     public ResponseEntity<Student> createStudents(@RequestBody String request) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            Student student = objectMapper.readValue(request,Student.class );
+            Student student = objectMapper.readValue(request, Student.class);
             JsonNode jsonNode = objectMapper.readTree(String.valueOf(student));
 
             departments = jsonNode.at("/department");
@@ -71,11 +81,10 @@ public class StudentsController {
             subjectLearningList.add(String.valueOf(subjectLearning));
 
 
-
             Student _student = studentRepository.save(student);
 
-            log.info("Student: {}",_student);
-            log.info("Subject Learning: {}",subjectLearningList);
+            log.info("Student: {}", _student);
+            log.info("Subject Learning: {}", subjectLearningList);
             return new ResponseEntity<>(_student, HttpStatus.CREATED);
         } catch (Exception e) {
             log.info(String.valueOf(e));
