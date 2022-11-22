@@ -1,19 +1,21 @@
 package com.fordevs.spring.jpa.postgresql.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "students")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@ToString
 public class Student {
 
     @Id
@@ -31,19 +33,26 @@ public class Student {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "dob")
-    private String dob;
+    @Column(name = "birth_date")
+    private String birthDate;
 
     @Column(name = "is_active")
     private Boolean isActive;
 
     // FK
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // Department department = new Department();
+    @ManyToOne
     @JoinColumn(name = "dept_id")
-    //Department department = new Department();
+    @JsonBackReference
     Department department;
 
     @ManyToMany(mappedBy = "students")
-    List<SubjectLearning> subjectLearning;
+    List<SubjectLearning> subjectLearning = new ArrayList<>();
+
+    public Student() {
+    }
+
+
+
 }
 
