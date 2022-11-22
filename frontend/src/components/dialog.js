@@ -4,7 +4,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {Switch, TextField} from "@material-ui/core";
+import {FormControlLabel, FormGroup, Switch, TextField} from "@material-ui/core";
 
 
 export default function FormDialog({
@@ -14,7 +14,7 @@ export default function FormDialog({
                                        onChange,
                                        handleFormSubmit,
                                    }) {
-    const {user_id, fullName, email, phone, dob, isActive, department, subjectLearning } = data;
+    const {user_id, fullName, email, phone, birthDate, isActive} = data;
 
     return (
         <div>
@@ -67,7 +67,7 @@ export default function FormDialog({
 
                         <TextField
                             id="dob"
-                            value={dob}
+                            value={birthDate}
                             onChange={(e) => onChange(e)}
                             placeholder="Enter Date of birth"
                             label="Date of Birth"
@@ -75,16 +75,21 @@ export default function FormDialog({
                             margin="dense"
                             fullWidth
                         />
-                        <Switch
-                            id="isActive"
-                            value={isActive}
-                            onChange={(e) => onChange(e)}
-                            placeholder="Enter fullName"
-                            label="isActive"
-                            variant="outlined"
-                            margin="dense"
 
-                        />
+                        <FormGroup>
+                            <FormControlLabel control={
+                                <Switch
+                                    defaultChecked
+                                    id="isActive"
+                                    value={isActive}
+                                    onChange={(e) => onChange(e)}
+                                    placeholder="Enter fullName"
+                                    label="isActive"
+                                    variant="outlined"
+                                    margin="dense"
+
+                                />} label="Student Status"/>
+                        </FormGroup>
                     </form>
                 </DialogContent>
 

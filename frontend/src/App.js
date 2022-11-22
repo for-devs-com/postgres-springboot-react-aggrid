@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
+import React, {useState, useEffect, useMemo, useCallback, useRef} from "react";
 import "./App.css";
 import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -9,7 +9,7 @@ import StudentDataService from "./services/StudentDataService";
 //import axios from "axios";
 
 // initial data values in form 
-const initialValue = {fullName: "", email: "", phone: "", dob: "", isActive:""};
+const initialValue = {fullName: "", email: "", phone: "", birthDate: "", isActive: ""};
 
 // Main Function
 function App(message) {
@@ -17,7 +17,8 @@ function App(message) {
     const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = React.useState(false);
-    const [formData, setFormData] = useState(initialValue);
+    const [formData, setFormData] = useState(initialValue)
+    const gridRef = useRef();
 
     // add user button popup form onClick event
     const handleClickOpen = () => {
@@ -47,12 +48,12 @@ function App(message) {
         {headerName: "Name", field: "fullName"},
         {headerName: "Email", field: "email"},
         {headerName: "phone", field: "phone"},
-        {headerName: "Date of Birth", field: "dob"},
-        {headerName: "State", field: "isActive",},
-        {headerName: "Department", field: "deptName"},
-        {headerName: "Subject", field: "subjectLearningName" },
+        {headerName: "Date of Birth", field: "birthDate"},
+        {headerName: "State", field: "isActive"},
+        {headerName: "Department", field: "department"},
+        {headerName: "Subject", field: "subjectLearning"},
         {
-            headerName: "Actions", field: "student_id",
+            headerName: "Actions", field: "studentID",
             cellRendererFramework: (params) =>
                 <div>
                     <Button
@@ -153,7 +154,10 @@ function App(message) {
         setGridApi(params);
     };
 
-
+    // Export as excel
+    const onBtExport = useCallback(() => {
+        gridApi.exportDataAsExcel();
+    }, []);
 
     return (
 
@@ -163,7 +167,7 @@ function App(message) {
             <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example Application</h2>
 
             {/* Material UI Grid Layout */}
-            <div className="ag-theme-material" style={{height: 500} }>
+            <div className="ag-theme-material" style={{height: 500}}>
                 <AgGridReact
                     rowData={tableData}
                     columnDefs={columnDefs}
@@ -178,6 +182,14 @@ function App(message) {
             <Grid align="center">
                 <Button variant="contained" color="primary" onClick={handleClickOpen}>
                     Create Student
+                </Button>
+
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={onBtExport}
+                >
+                    Export As Excel
                 </Button>
             </Grid>
 
