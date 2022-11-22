@@ -70,19 +70,10 @@ public class StudentsController {
         try {
 
             ObjectMapper objectMapper = new ObjectMapper();
-//            //objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
             Student student = objectMapper.readValue(newStudent, Student.class);
-            //JsonNode jsonNode = objectMapper.readTree(String.valueOf(student));
-
-//            departments = jsonNode.at("/department");
-//            subjectLearning = jsonNode.at("/subjectLearning");
-//            subjectLearningList.add(String.valueOf(subjectLearning));
-
-
             Student _student = studentRepository.save(student);
-
             log.info("Student: {}", _student);
-            // log.info("Subject Learning: {}", subjectLearningList);
+
             return new ResponseEntity<>(_student, HttpStatus.CREATED);
         } catch (Exception e) {
             log.info(String.valueOf(e));
