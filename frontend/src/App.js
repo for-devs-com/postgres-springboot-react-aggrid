@@ -1,9 +1,10 @@
 import React, {useState, useEffect, useMemo, useCallback, useRef} from "react";
 import "./App.css";
 import {AgGridReact} from "ag-grid-react";
+import 'ag-grid-enterprise';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.min.css";
-import {Grid, Button} from "@material-ui/core";
+import {Grid, Button, Container} from "@material-ui/core";
 import FormDialog from "./components/dialog";
 import StudentDataService from "./services/StudentDataService";
 //import axios from "axios";
@@ -14,11 +15,11 @@ const initialValue = {fullName: "", email: "", phone: "", birthDate: "", isActiv
 // Main Function
 function App(message) {
     // eslint-disable-next-line
-    const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = React.useState(false);
     const [formData, setFormData] = useState(initialValue)
-    const gridRef = useRef();
+    const [gridApi, setGridApi] = useState();
+
 
     // add user button popup form onClick event
     const handleClickOpen = () => {
@@ -151,55 +152,61 @@ function App(message) {
 
     // render grid when data exist
     const onGridReady = (params) => {
-        setGridApi(params);
+        setGridApi(params.api)
     };
 
     // Export as excel
-    const onBtExport = useCallback(() => {
+    const onBtExport = () => {
+        // gridRef.current.api.exportDataAsExcel();
         gridApi.exportDataAsExcel();
-    }, []);
+    }
 
     return (
 
         <div className="App">
+            <Container maxWidth="xl">
 
-            <h1 align="center">for-devs.com</h1>
-            <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example Application</h2>
 
-            {/* Material UI Grid Layout */}
-            <div className="ag-theme-material" style={{height: 500}}>
-                <AgGridReact
-                    rowData={tableData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    onGridReady={onGridReady}
-                    pagination={true}
-                    paginationPageSize={8}
+                <h1 align="center">for-devs.com</h1>
+                <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example Application</h2>
 
+                {/* Material UI Grid Layout */}
+                <div className="ag-theme-material" style={{height: 500}}>
+                    <AgGridReact
+                        //ref={gridRef}
+                        rowData={tableData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        onGridReady={onGridReady}
+                        pagination={true}
+                        paginationPageSize={8}
+
+                    />
+                </div>
+
+                <Grid align="center">
+                    <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                        Create Student
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={onBtExport}
+                    >
+                        Export As Excel
+                    </Button>
+                </Grid>
+
+                <FormDialog
+                    open={open}
+                    handleClose={handleClose}
+                    data={formData}
+                    onChange={onChange}
+                    handleFormSubmit={handleFormSubmit}
                 />
-            </div>
 
-            <Grid align="center">
-                <Button variant="contained" color="primary" onClick={handleClickOpen}>
-                    Create Student
-                </Button>
-
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={onBtExport}
-                >
-                    Export As Excel
-                </Button>
-            </Grid>
-
-            <FormDialog
-                open={open}
-                handleClose={handleClose}
-                data={formData}
-                onChange={onChange}
-                handleFormSubmit={handleFormSubmit}
-            />
+            </Container>
         </div>
     );
 }
