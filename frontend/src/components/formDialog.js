@@ -4,17 +4,24 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {FormControlLabel, FormGroup, Switch, TextField} from "@material-ui/core";
+import {/*FormControlLabel,*/ FormGroup, Switch, TextField} from "@material-ui/core";
 
+function FormDialog({
+                        open,
+                        handleClose,
+                        data,
+                        onChange,
+                        handleFormSubmit,
+                        handleCheckStatusChange,
+                        checked
+                    }) {
 
-export default function FormDialog({
-                                       open,
-                                       handleClose,
-                                       data,
-                                       onChange,
-                                       handleFormSubmit,
-                                   }) {
     const {user_id, fullName, email, phone, birthDate, isActive} = data;
+
+
+
+
+
 
     return (
         <div>
@@ -30,6 +37,7 @@ export default function FormDialog({
                 </DialogTitle>
 
                 <DialogContent>
+
                     <form>
 
                         <TextField
@@ -41,6 +49,7 @@ export default function FormDialog({
                             variant="outlined"
                             margin="dense"
                             fullWidth
+                            type="text"
                         />
 
                         <TextField
@@ -49,9 +58,10 @@ export default function FormDialog({
                             onChange={(e) => onChange(e)}
                             placeholder="Enter email"
                             label="Email"
-                            variant="outlined"
+                            variant="standard"
                             margin="dense"
                             fullWidth
+                            type="email"
                         />
 
                         <TextField
@@ -66,7 +76,7 @@ export default function FormDialog({
                         />
 
                         <TextField
-                            id="dob"
+                            id="birthDate"
                             value={birthDate}
                             onChange={(e) => onChange(e)}
                             placeholder="Enter Date of birth"
@@ -77,26 +87,28 @@ export default function FormDialog({
                         />
 
                         <FormGroup>
-                            <FormControlLabel control={
-                                <Switch
-                                    defaultChecked
-                                    id="isActive"
-                                    value={isActive}
-                                    onChange={(e) => onChange(e)}
-                                    placeholder="Enter fullName"
-                                    label="isActive"
-                                    variant="outlined"
-                                    margin="dense"
+                            {/*<FormControlLabel*/}
+                            {/*label="Status"
+                                control={*/}
+                            <Switch
+                                id="switchStatus"
+                                checked={checked}
+                                onChange={handleCheckStatusChange}
+                                inputProps={{'aria-label': 'controlled'}}
+                                value={data.isActive}
 
-                                />} label="Student Status"/>
+
+                            />{/*} />*/}
                         </FormGroup>
                     </form>
                 </DialogContent>
 
                 <DialogActions>
+
                     <Button onClick={handleClose} color="secondary" variant="outlined">
                         Cancel
                     </Button>
+
                     <Button
                         color="primary"
                         onClick={() => handleFormSubmit()}
@@ -105,7 +117,10 @@ export default function FormDialog({
                         {user_id ? "Update" : "Submit"}
                     </Button>
                 </DialogActions>
+
             </Dialog>
         </div>
     );
 }
+
+export {FormDialog};

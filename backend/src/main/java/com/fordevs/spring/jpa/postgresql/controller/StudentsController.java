@@ -1,5 +1,7 @@
 package com.fordevs.spring.jpa.postgresql.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,27 +23,36 @@ import java.util.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class StudentsController {
 
-    @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-//    List<String> subjectLearningList = new ArrayList<>();
-//    JsonNode subjectLearning;
-//    JsonNode departments;
+
+    public StudentsController(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
 
     //	getting all users
-    //@GetMapping(value = "/students", produces = "application/json")
     @GetMapping(value = "/students")
     public ResponseEntity<List<Student>> getAllStudents(@RequestParam(required = false) String fullName) {
         try {
+            //ObjectMapper mapper = new ObjectMapper();
             List<Student> studentList = new ArrayList<>();
+            //Student students = mapper.;
+
+
+            /*método "trim()" es para eliminar cualquier espacio en blanco adicional. Si el valor es una cadena vacía,
+            se devuelve un código de estado HTTP 400 (Solicitud incorrecta) en lugar de continuar con la función.*/
+            if (fullName != null && fullName.trim().length() == 0) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
 
             if (fullName == null)
                 studentList.addAll(studentRepository.findAll());
+
 
             else
                 studentList.addAll(studentRepository.findByFullNameContaining(fullName));
@@ -49,8 +61,11 @@ public class StudentsController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
+            log.info("Student list: {}", studentList);
+
             return new ResponseEntity<>(studentList, HttpStatus.OK);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -64,20 +79,19 @@ public class StudentsController {
     }
 
     //	Create Student
-    // @PostMapping(value = "/students", consumes = "application/json")
     @PostMapping(value = "/students")
-    public ResponseEntity<Student> createStudents(@RequestBody String newStudent) throws JsonParseException, JsonMappingException, IOException {
+    public ResponseEntity<Student> createStudents(@RequestBody String newStudent) throws JsonParseException, IOException {
         try {
 
             ObjectMapper objectMapper = new ObjectMapper();
             Student student = objectMapper.readValue(newStudent, Student.class);
             Student _student = studentRepository.save(student);
-            log.info("Student: {}", _student);
+            log.info("Student content: {}", _student);
 
             return new ResponseEntity<>(_student, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.info(String.valueOf(e));
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            log.error("Error while creating student: {}", e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -93,7 +107,7 @@ public class StudentsController {
             _student.setPhone(student.getPhone());
             _student.setBirthDate(student.getBirthDate());
             _student.setIsActive(student.getIsActive());
-            _student.setSubjectLearning(student.getSubjectLearning());
+            //_student.setSubjectLearning(student.getSubjectLearning());
             _student.setDepartment(student.getDepartment());
             return new ResponseEntity<>(studentRepository.save(_student), HttpStatus.OK);
         } else {
