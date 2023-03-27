@@ -8,6 +8,7 @@ import "ag-grid-community/dist/styles/ag-theme-material.min.css";
 import {Button, Grid} from "@material-ui/core";
 import {FormDialog} from "./components/FormDialog";
 import StudentDataService from "./services/StudentDataService";
+import Dashboard from "./components/dashboard";
 
 
 // Main Function
@@ -171,15 +172,10 @@ function App() {
     return (
 
         <div className="App">
+            <Dashboard/>
+
+
             <Grid maxWidth="lg" align="center" container spacing={2}>
-
-                {/* heading */}
-                <Grid item lg={12} className="title">
-                    <h1 align="center">for-devs.com</h1>
-                    <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example
-                        Application</h2>
-                </Grid>
-
 
                 {/* Material UI Grid Layout */}
                 <Grid item lg={12}>
@@ -224,7 +220,6 @@ function App() {
                 />
 
             </Grid>
-
         </div>)
         ;
 }
