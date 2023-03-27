@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="StartFullStack" type="CompoundRunConfigurationType">
+    <toRun name="start-FE" type="js.build_tools.npm" />
+    <toRun name="SpringBootJpaPostgresqlApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

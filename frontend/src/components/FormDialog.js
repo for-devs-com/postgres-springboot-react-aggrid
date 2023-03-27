@@ -4,36 +4,31 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {/*FormControlLabel,*/ FormGroup, Switch, TextField} from "@material-ui/core";
+import {FormControlLabel,/*FormControlLabel,*/ FormGroup, Switch, TextField} from "@material-ui/core";
 
 function FormDialog({
-                        open,
+                        openDialogForm,
                         handleClose,
                         data,
                         onChange,
                         handleFormSubmit,
-                        handleCheckStatusChange,
-                        checked
+                        switchState,
                     }) {
 
-    const {user_id, fullName, email, phone, birthDate, isActive} = data;
-
-
-
-
+    const {id, fullName, email, phone, birthDate, isActive} = data;
 
 
     return (
         <div>
             <Dialog
-                open={open}
+                open={openDialogForm}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
 
                 <DialogTitle id="alert-dialog-title">
-                    {user_id ? "Update user" : "Create new user"}
+                    {id ? "Update Student" : "Create new student"}
                 </DialogTitle>
 
                 <DialogContent>
@@ -87,18 +82,17 @@ function FormDialog({
                         />
 
                         <FormGroup>
-                            {/*<FormControlLabel*/}
-                            {/*label="Status"
-                                control={*/}
-                            <Switch
-                                id="switchStatus"
-                                checked={checked}
-                                onChange={handleCheckStatusChange}
-                                inputProps={{'aria-label': 'controlled'}}
-                                value={data.isActive}
-
-
-                            />{/*} />*/}
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        id="switchStatus"
+                                        checked={isActive}
+                                        onChange={switchState}
+                                        inputProps={{'aria-label': 'controlled'}}
+                                    />
+                                }
+                                label="Status"
+                            ></FormControlLabel>
                         </FormGroup>
                     </form>
                 </DialogContent>
@@ -114,7 +108,7 @@ function FormDialog({
                         onClick={() => handleFormSubmit()}
                         variant="contained"
                     >
-                        {user_id ? "Update" : "Submit"}
+                        {id ? "Update" : "Submit"}
                     </Button>
                 </DialogActions>
 

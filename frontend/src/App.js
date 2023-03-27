@@ -1,23 +1,26 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import "./App.css";
 import {AgGridReact} from "ag-grid-react";
-import 'ag-grid-enterprise';
+import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import "ag-grid-community/dist/styles/ag-theme-material.min.css";
-import {Button, Container, Grid} from "@material-ui/core";
-import {FormDialog} from "./components/formDialog";
+import {Button, Grid} from "@material-ui/core";
+import {FormDialog} from "./components/FormDialog";
 import StudentDataService from "./services/StudentDataService";
 
-// initial data values in form 
-const initialValue = {fullName: "", email: "", phone: "", birthDate: "", isActive: ""};
 
 // Main Function
-function App(message) {
-    // eslint-disable-next-line
-    const [tableData, setTableData] = useState(null);
-    const [open, setOpen] = React.useState(false);
-    const [formState, setFormState] = useState(initialValue)
+function App() {
+
+
+    // initial data values in form
+    const initialValue = {fullName: "", email: "", phone: "", birthDate: "", isActive: false};
+    const gridRef = useRef();
     const [gridApi, setGridApi] = useState();
+    const [tableData, setTableData] = useState();
+    const [openDialogForm, setOpen] = React.useState(false);
+    const [formState, setFormState] = useState(initialValue)
 
 
     // add user button popup form onClick event
@@ -31,42 +34,43 @@ function App(message) {
         setFormState(initialValue);
     };
 
-    //
+    // default column definition
     const defaultColDef = useMemo(() => {
         return {
-            editable: true, sortable: true, flex: 1, filter: true, resizable: true,
+            // set the default column width
+            width: 150,
+            // make every column editable
+            editable: true,
+            // make every column use 'text' filter by default
+            filter: 'agTextColumnFilter',
+            // enable floating filters by default
+            floatingFilter: true,
+            // make columns resizable
+            resizable: true,
         };
     }, []);
 
+    // column definitions for grid
     const [columnDefs, setColumnsDefs] = useState([
-        {headerName: "ID", field: "studentID"}, {
-            headerName: "Name",
-            field: "fullName"
-        }, {headerName: "Email", field: "email"}, {headerName: "Phone", field: "phone"}, {
-            headerName: "Date of Birth",
-            field: "birthDate"
-        }, {headerName: "State", field: "isActive"}, {
-            headerName: "Department",
-            field: "department"
-        }, {headerName: "Subject", field: "subjectLearning"}, {
+        {headerName: "ID", field: "studentID"},
+        {headerName: "Name", field: "fullName"},
+        {headerName: "Email", field: "email"},
+        {headerName: "Phone", field: "phone"},
+        {headerName: "Date of Birth", field: "birthDate"},
+        {headerName: "State", field: "isActive"},
+        {
             headerName: "Actions", field: "studentID",
-            cellRendererFramework: (params) => <div>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleUpdate(params.data)}
-                >
-                    Update
-                </Button>
 
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => handleDelete(params.value)}
-                >
-                    Delete
-                </Button>
-            </div>
+            cellRendererFramework: (params) =>
+                <div>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleDelete(params.value)}
+                    >
+                        Delete
+                    </Button>
+                </div>
 
         }]);
 
@@ -76,7 +80,7 @@ function App(message) {
         getStudents();
     }, []);
 
-    // Fetching user data from server
+    // Fetching students data from server
     const getStudents = () => {
         StudentDataService.getAll()
             .then((response) => {
@@ -85,17 +89,11 @@ function App(message) {
             })
     };
 
-    // updating data and opening pop up window
-    const handleUpdate = (oldData) => {
-        setFormState(oldData);
-        handleClickOpen();
-    };
-
     //deleting a user
     const handleDelete = (id) => {
         console.log('handleDelete Content:', id);
         // delete confirmation message
-        const confirmation = window.confirm("Are you sure, you want to delete this row?")
+        const confirmation = window.confirm("Are you sure, you want to delete this row?" + id);
 
         if (confirmation) {
             StudentDataService.delete(id).then((r) => r.data).then((r) => {
@@ -105,12 +103,13 @@ function App(message) {
         }
     };
 
+    // handleFormSubmit event in dialog form
     const handleFormSubmit = () => {
-        if (formState) {
+        if (formState.id) {
 
 
             // Alert message
-            const confirm = window.confirm("Are you sure, you want to update this row ?");
+            const confirm = window.confirm("Are you sure, you want to update this row ?" + formState.id);
 
             //  updating a user
             confirm && StudentDataService.update(formState.id)
@@ -134,55 +133,73 @@ function App(message) {
     // handleInputChange event in dialog form
     const handleInputChange = (event) => {
         const {value = '', id} = event.target;
-        setFormState({...formState, [event.target.id]: event.target.value});
+        setFormState({...formState, [id]: value});
         console.log(value, id)
     };
 
-    const handleCheckStatusChange = (event) => {
-        setChecked(event.target.checked);
-    };
-
     /*Handling check state*/
-    const [checked, setChecked] = React.useState(true);
-
+    const handleCheckStatusChange = (event) => {
+        const {checked} = event.target;
+        setFormState({...formState, isActive: checked})
+    };
 
     // render grid when data exist
     const onGridReady = (params) => {
         setGridApi(params.api)
+
     };
+
+    // Handling cell value changes
+    const handleCellValueChanged = useCallback(async (params) => {
+        const {data} = params;
+        const updatedData = {...data, [params.colDef.field]: params.newValue};
+
+        try {
+            await StudentDataService.update(data.studentID, updatedData);
+            getStudents();
+        } catch (error) {
+            console.error("Error updating cell value: ", error);
+        }
+    }, [getStudents]);
+
 
     // Export as excel
     const onBtExport = () => {
-        // gridRef.current.api.exportDataAsExcel();
         gridApi.exportDataAsExcel();
     }
 
     return (
 
         <div className="App">
-            <Container maxWidth="xl">
+            <Grid maxWidth="lg" align="center" container spacing={2}>
 
+                {/* heading */}
+                <Grid item lg={12} className="title">
+                    <h1 align="center">for-devs.com</h1>
+                    <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example
+                        Application</h2>
+                </Grid>
 
-                <h1 align="center">for-devs.com</h1>
-                <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example Application</h2>
 
                 {/* Material UI Grid Layout */}
-
-                <div className="ag-theme-alpine" style={{height: 550}}>
-                    <AgGridReact
-                        rowData={tableData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                        onGridReady={onGridReady}
-                        pagination={true}
-                        paginationPageSize={10}
-                    />
-                </div>
+                <Grid item lg={12}>
+                    <div className="ag-theme-alpine" style={{height: 540, maxWidth: 1420}}>
+                        <AgGridReact
+                            rowData={tableData}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
+                            onGridReady={onGridReady}
+                            ref={gridRef}
+                            pagination={true}
+                            paginationPageSize={10}
+                            onCellValueChanged={handleCellValueChanged}
+                        ></AgGridReact>
+                    </div>
+                </Grid>
 
 
                 {/*create student and export as excel buttons*/}
-                <Grid align="center">
-
+                <Grid item lg={12}>
                     <Button variant="contained" color="primary" onClick={handleClickOpen}>
                         Create Student
                     </Button>
@@ -196,20 +213,20 @@ function App(message) {
                     </Button>
                 </Grid>
 
-
                 {/*Dialog component*/}
                 <FormDialog
-                    open={open}
+                    openDialogForm={openDialogForm}
                     handleClose={handleClose}
                     data={formState}
                     onChange={handleInputChange}
                     handleFormSubmit={handleFormSubmit}
-                    handleCheckStatusChange={handleCheckStatusChange}
-                    checked={checked}
+                    switchState={handleCheckStatusChange}
                 />
 
-            </Container>
-        </div>);
+            </Grid>
+
+        </div>)
+        ;
 }
 
 export default App;

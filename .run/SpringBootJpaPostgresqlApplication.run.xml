@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SpringBootJpaPostgresqlApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" />
+    <module name="spring-boot-jpa-postgresql" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.fordevs.spring.jpa.postgresql.SpringBootJpaPostgresqlApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
