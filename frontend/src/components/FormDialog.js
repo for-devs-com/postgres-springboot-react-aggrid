@@ -4,7 +4,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {FormControlLabel,/*FormControlLabel,*/ FormGroup, Switch, TextField} from "@material-ui/core";
+import {FormControlLabel, FormGroup, InputAdornment, Switch, TextField} from "@material-ui/core";
 
 function FormDialog({
                         openDialogForm,
@@ -45,6 +45,17 @@ function FormDialog({
                             margin="dense"
                             fullWidth
                             type="text"
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <span>Name: </span>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            inputProps={{
+                                pattern: "[A-Za-z]+( [A-Za-z]+)*",
+                                title: "Debe ingresar solo letras y espacios",
+                            }}
                         />
 
                         <TextField
@@ -57,6 +68,9 @@ function FormDialog({
                             margin="dense"
                             fullWidth
                             type="email"
+                            inputProps={{
+                                pattern: "[^@]+@[^@]+\\.[^@]+",
+                                title: "Debe ingresar un correo electrónico válido",}}
                         />
 
                         <TextField
@@ -79,6 +93,11 @@ function FormDialog({
                             variant="outlined"
                             margin="dense"
                             fullWidth
+                            inputProps={{
+                                pattern: "\\d{4}-\\d{2}-\\d{2}",
+                                title:
+                                    "Debe ingresar la fecha en formato YYYY-MM-DD",
+                            }}
                         />
 
                         <FormGroup>

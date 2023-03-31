@@ -1,6 +1,7 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Container, Grid, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React, {useState} from "react";
+import {AppBar, Toolbar, Typography, Container, Grid, Paper, IconButton} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import GridComponent from "./GridComponent";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -16,22 +17,34 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Dashboard = () => {
+const Dashboard = (props) => {
     const classes = useStyles();
+
+    const handleLogout = () => {
+        // Actualizar el estado de autenticación
+        props.handleLogout();
+    };
 
     return (
         <>
             <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6">for-devs.com</Typography>
+                    <IconButton color="inherit" onClick={handleLogout}>
+                        exit
+                    </IconButton>
                 </Toolbar>
             </AppBar>
 
-            {/* heading */}
-            <Grid item lg={12}>
-                <h2>React, AgGrid, Material UI, Spring Boot, Data JPA, PostgresSQL,And Maven Example
-                    Application</h2>
-            </Grid>
+            <Container maxWidth="lg" className={classes.container}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <GridComponent/></Paper>
+                    </Grid>
+                </Grid>
+            </Container>
+
         </>
     );
 };
