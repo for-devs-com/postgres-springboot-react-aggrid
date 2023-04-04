@@ -39,7 +39,7 @@ function FormDialog({
                             id="fullName"
                             value={fullName}
                             onChange={(e) => onChange(e)}
-                            placeholder="Enter fullName"
+                            placeholder="Enter firstName"
                             label="Name"
                             variant="outlined"
                             margin="dense"

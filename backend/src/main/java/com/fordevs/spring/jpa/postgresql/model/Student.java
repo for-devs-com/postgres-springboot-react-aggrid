@@ -10,37 +10,34 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 @Data
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
+//@ToString
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "studentID")
+        property = "id")
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "student_generator")
     //@Column(name = "student_id", nullable = false, unique = true)
-    @Column(name = "student_id", unique = true)
-    Long studentID;
+    @Column(name = "id", unique = true)
+    Long id;
 
-    @Column(name = "full_name")
-    private String fullName;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "phone")
-    private String phone;
-
-    @Column(name = "birth_date")
-    private String birthDate;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -59,14 +56,10 @@ public class Student {
     @JsonManagedReference
     List<SubjectLearning> subjectLearning = new ArrayList<>();
 
-    public Student() {
-    }
-
-    public Student(String fullName, String email, String phone, String birthDate, Boolean isActive, Department department, List<SubjectLearning> subjectLearning) {
-        this.fullName = fullName;
+    public Student(String firstName, String lastName ,String email, Boolean isActive, Department department, List<SubjectLearning> subjectLearning) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
-        this.phone = phone;
-        this.birthDate = birthDate;
         this.isActive = isActive;
         this.department = department;
         this.subjectLearning = subjectLearning;

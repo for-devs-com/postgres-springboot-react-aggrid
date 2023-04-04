@@ -5,6 +5,10 @@ class StudentDataService {
         return http.get("/students");
     }
 
+    getFirstRows(){
+        return http.get("/students/first10");
+    }
+
     get(id) {
         return http.get(`/students/${id}`);
     }

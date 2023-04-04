@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fordevs.spring.jpa.postgresql.model.Student;
 import com.fordevs.spring.jpa.postgresql.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,44 +27,52 @@ import java.util.Optional;
 @Slf4j
 public class StudentsController {
 
-    private final StudentRepository studentRepository;
+    @Autowired
+    StudentRepository studentRepository;
 
 
-    public StudentsController(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    // getting first 30 students
+    @GetMapping(value = "/students/first10")
+    public ResponseEntity<Page<Student>> getFirstStudents(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        try {
+            Pageable pageable = PageRequest.of(page,size);
+
+            Page<Student> studentList = firstName == null ?
+                    studentRepository.findAll(pageable) :
+                    studentRepository.findByFirstNameContaining(firstName, pageable);
+
+
+            log.info("Student list: {}", studentList.getContent());
+
+            return new ResponseEntity<>(studentList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
     //	getting all users
     @GetMapping(value = "/students")
-    public ResponseEntity<List<Student>> getAllStudents(@RequestParam(required = false) String fullName) {
+    public ResponseEntity<Page<Student>> getAllStudents(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
-            //ObjectMapper mapper = new ObjectMapper();
-            List<Student> studentList = new ArrayList<>();
-            //Student students = mapper.;
+            Pageable pageable = PageRequest.of(page,size);
 
-            if (fullName == null)
-                studentList.addAll(studentRepository.findAll());
-
-
-            else
-                studentList.addAll(studentRepository.findByFullNameContaining(fullName));
+            Page<Student> studentList = firstName == null ?
+                    studentRepository.findAll(pageable) :
+                    studentRepository.findByFirstNameContaining(firstName, pageable);
 
 
-
-            log.info("Student list: {}", studentList);
-
-            /*método "trim()" es para eliminar cualquier espacio en blanco adicional en . Si el valor es una cadena vacía,
-            se devuelve un código de estado HTTP 400 (Solicitud incorrecta) en lugar de continuar con la función.*/
-            if (fullName != null && fullName.trim().length() == 0) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-
+            log.info("Student list: {}", studentList.getContent());
 
             return new ResponseEntity<>(studentList, HttpStatus.OK);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -97,12 +109,11 @@ public class StudentsController {
 
         if (studentsData.isPresent()) {
             Student _student = studentsData.get();
-            _student.setFullName(student.getFullName());
+            _student.setFirstName(student.getFirstName());
+            _student.setLastName(student.getLastName());
             _student.setEmail(student.getEmail());
-            _student.setPhone(student.getPhone());
-            _student.setBirthDate(student.getBirthDate());
             _student.setIsActive(student.getIsActive());
-            //_student.setSubjectLearning(student.getSubjectLearning());
+            _student.setSubjectLearning(student.getSubjectLearning());
             _student.setDepartment(student.getDepartment());
             return new ResponseEntity<>(studentRepository.save(_student), HttpStatus.OK);
         } else {

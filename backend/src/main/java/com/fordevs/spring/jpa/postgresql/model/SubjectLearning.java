@@ -11,7 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "subject_learning")
+@Table(name = "subjects_learning")
 @Data
 @AllArgsConstructor
 @JsonIdentityInfo(
@@ -21,23 +21,23 @@ public class SubjectLearning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_learning_generator")
-    @Column(name = "subject_learning_id")
+    @Column(name = "id")
     Long subjectLearningID;
 
-    @Column(name = "subject_learning_name")
+    @Column(name = "sub_name")
     String subjectLearningName;
 
     @Column(name = "marks_obtained")
     Long marksObtained;
 
-//    if many to many realionship needed, this shuld work
-//
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = "subjectlearnings_students",
-//            joinColumns = @JoinColumn(name = "subject_learning_id"),
-//            inverseJoinColumns = @JoinColumn(name = "student_id")
-//    )
+    /*if many to many realionship needed, this shuld work
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "subjectlearnings_students",
+            joinColumns = @JoinColumn(name = "subject_learning_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )*/
 
     //@JoinColumn(name = "student_id")
     @ManyToOne

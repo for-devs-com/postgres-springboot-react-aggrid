@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "departments")
+@Table(name = "department")
 @Data
 @AllArgsConstructor
 @JsonIdentityInfo(
@@ -18,7 +18,7 @@ import java.util.*;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "department_generator")
-    @Column(name = "dept_id")
+    @Column(name = "id")
     Long deptID;
 
     @Column(name = "dept_name")
